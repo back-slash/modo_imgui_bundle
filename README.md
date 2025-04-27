@@ -2,7 +2,7 @@
 
 A Modo kit that integrates Dear ImGui library with Modo for creating custom user interfaces.
 
-![Modo ImGui Bundle in action](./example_image.png "Screenshot of ImGui running inside Modo")
+![Modo ImGui Bundle in action](./example_imgui.png "Screenshot of ImGui running inside Modo")
 
 ## Description
 
@@ -18,7 +18,7 @@ This project provides integration of python [Dear Imgui Bundle](https://github.c
 
 1. Install imgui_bundle into your `/python3kit/extra64/Python/Lib/site-packages` directory (manually).
 2. Install example kit.
-3. Start Exploring
+3. Start Exploring :)
 
 ## Usage
 
