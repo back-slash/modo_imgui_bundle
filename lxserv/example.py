@@ -1,7 +1,7 @@
 #####################################################################################################################
 # Modo Imgui Bundle - Example
 # Author: Nikolas Sumnall
-# Date: 2025-04-26
+# Date: 2025-04-27
 # Description: Example customview and command for Modo Imgui Bundle.
 # License: MIT
 ##################################################################################################################### 
@@ -39,12 +39,12 @@ class MIBExampleRenderLoop(cmib.MIBRenderLoop):
         imgui.set_next_window_size((window_width, window_height))
         imgui.set_next_window_pos((0, 0))
         window_flags = imgui.WindowFlags_.no_resize | imgui.WindowFlags_.no_move | imgui.WindowFlags_.no_scrollbar
-        imgui.begin("Modo Imgui Bundle Example", False, window_flags)
-        imgui.text("Hello, User!")
-        imgui.text("This is a simple example of how to use Imgui Bundle in modo.")
+        imgui.begin("Modo ImGui Bundle Example", False, window_flags)
+        imgui.text("Hello, Modo user!")
+        imgui.text("This is a simple example of how to use ImGui Bundle in modo.")
         imgui.set_next_item_width(200)
         item_list = ["mesh", "camera", "light", "locator"]
-        _, self._choice = imgui.combo("Select Item Type:", self._choice, item_list)
+        _, self._choice = imgui.combo("Type", self._choice, item_list)
         imgui.same_line()
         if imgui.button("Create Modo Object"):
             lx.eval(f"item.create {item_list[self._choice]}")
@@ -72,7 +72,7 @@ class MIBExampleCommand(lxuc.BasicCommand):
 @cmib.modo_error_out
 def bless_classes():
     lx.out("Blessing classes...")
-    lx.bless(MIBExampleView, "Modo Imgui Bundle Example")
+    lx.bless(MIBExampleView, "mib_example_view")
     lx.bless(MIBExampleCommand, "mib_example_command.open")
 
 bless_classes()

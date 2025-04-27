@@ -16,8 +16,9 @@ This project provides integration of python [Dear Imgui Bundle](https://github.c
 
 ## Installation
 
-1. Install imgui_bundle into your `/python3kit/extra64/Python/Lib/site-packages` directory.
+1. Install imgui_bundle into your `/python3kit/extra64/Python/Lib/site-packages` directory (manually).
 2. Install example kit.
+3. Start Exploring
 
 ## Usage
 

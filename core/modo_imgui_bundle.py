@@ -1,7 +1,7 @@
 #####################################################################################################################
-# Modo Imgui Bundle - Core
+# Modo ImGui Bundle - Core
 # Author: Nikolas Sumnall
-# Date: 2025-04-26
+# Date: 2025-04-27
 # Description: This kit creates a custom Modo pane using PySide6 and OpenGL to render an ImGui Bundle interface.
 # License: MIT
 #####################################################################################################################
@@ -154,7 +154,7 @@ class MIBOGLWidget(QtOpenGLWidgets.QOpenGLWidget):
 
 
 class MIBView(lxifc.CustomView):
-    """Custom view Imgui Bundle base class."""
+    """Custom view ImGui Bundle base class."""
     def __init__(self, window: 'MIBRenderLoop'):
         super().__init__()
         self._render_loop_function = window.render_loop
@@ -182,7 +182,7 @@ class MIBView(lxifc.CustomView):
 
 
 class MIBRenderLoop:
-    """Custom window Imgui Bundle base class."""
+    """Custom window ImGui Bundle base class."""
 
     def render_loop(self):
         """Override this method to implement your render loop."""
