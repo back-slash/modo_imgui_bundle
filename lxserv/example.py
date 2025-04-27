@@ -13,8 +13,8 @@ import traceback
 import lx
 import lxu.command as lxuc
 
+#KIT
 try:
-    #KIT
     fileService = lx.service.File()
     aliasPath = fileService.ToLocalAlias('resource:')
     site.addsitedir(f"{aliasPath}/python3kit/extra64/Python/Lib/site-packages")
@@ -43,7 +43,7 @@ class MIBExampleRenderLoop(cmib.MIBRenderLoop):
         imgui.text("Hello, User!")
         imgui.text("This is a simple example of how to use Imgui Bundle in modo.")
         imgui.set_next_item_width(200)
-        item_list = ["mesh", "camera", "light", "locator", "null"]
+        item_list = ["mesh", "camera", "light", "locator"]
         _, self._choice = imgui.combo("Select Item Type:", self._choice, item_list)
         imgui.same_line()
         if imgui.button("Create Modo Object"):

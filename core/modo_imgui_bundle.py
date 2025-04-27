@@ -14,13 +14,11 @@ import lx
 import lxifc
 from PySide6 import QtWidgets, QtCore, QtGui, QtOpenGLWidgets
 
-#####################################################################################################################
-fileService = lx.service.File()
-aliasPath = fileService.ToLocalAlias('resource:')
-site.addsitedir(f"{aliasPath}/python3kit/extra64/Python/Lib/site-packages")
-#####################################################################################################################
-
+#KIT
 try:
+    fileService = lx.service.File()
+    aliasPath = fileService.ToLocalAlias('resource:')
+    site.addsitedir(f"{aliasPath}/python3kit/extra64/Python/Lib/site-packages")
     import OpenGL.GL as gl
     from imgui_bundle import imgui
 except:
@@ -44,6 +42,7 @@ def modo_error_out(func):
 #####################################################################################################################
 
 class MIBOGLWidget(QtOpenGLWidgets.QOpenGLWidget):
+    """OpenGL widget for rendering ImGui."""
     def __init__(self, render_loop_function, parent=None):
         super().__init__(parent)
         self._render_loop_function = render_loop_function
