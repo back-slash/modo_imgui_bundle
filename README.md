@@ -2,7 +2,7 @@
 
 A Modo kit that integrates Dear ImGui library with Modo for creating custom user interfaces.
 
-![Modo ImGui Bundle in action](.modo_imgui_example.png "Screenshot of ImGui running inside Modo")
+![Modo ImGui Bundle in action](./example_image.png "Screenshot of ImGui running inside Modo")
 
 ## Description
 
