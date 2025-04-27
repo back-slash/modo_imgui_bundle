@@ -25,8 +25,7 @@ Click button created in `Kits` (top right of Modo).
 
 ## Requirements
 
-- Modo
-- Windows, macOS, or Linux
+- Modo (w/ PySide6)
 
 ## License
 
