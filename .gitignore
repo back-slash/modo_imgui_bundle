@@ -1,6 +1,5 @@
-# IDE
-.vscode
-.idea
+# HIDDEN FILES
+.*
 
 # Build
 *.pyc
