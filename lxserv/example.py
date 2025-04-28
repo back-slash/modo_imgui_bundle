@@ -25,8 +25,6 @@ except:
 #####################################################################################################################
 
 
-
-
 class MIBExampleRenderLoop(cmib.MIBRenderLoop):
     def __init__(self):
         self._choice = 0
@@ -68,6 +66,7 @@ class MIBExampleCommand(lxuc.BasicCommand):
 
 
 #####################################################################################################################
+
 
 @cmib.modo_error_out
 def bless_classes():

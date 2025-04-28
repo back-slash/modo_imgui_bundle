@@ -1,6 +1,6 @@
 # Modo ImGui Bundle
 
-A Modo kit that integrates Dear ImGui library with Modo for creating custom user interfaces.
+A Modo kit that integrates the Dear ImGui Bundle library for creating custom user interfaces.
 
 ![Modo ImGui Bundle in action](./example_imgui.png "Screenshot of ImGui running inside Modo")
 
