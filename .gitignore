@@ -1,11 +1,5 @@
 # HIDDEN FILES
 .*
 
-# Build
+# BUILD
 *.pyc
-
-# Advanced
-# This is meant to be a simplified template (No automation)
-# see modo_kit_advanced for a more advanced kit setup
-Pipfile
-Pipfile.lock
