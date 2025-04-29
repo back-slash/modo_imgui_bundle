@@ -6,6 +6,7 @@
 # License: MIT
 #####################################################################################################################
 # PYTHON
+from multiprocessing import context
 import site
 import traceback
 
@@ -43,12 +44,17 @@ def modo_error_out(func):
 
 class MIBOGLWidget(QtOpenGLWidgets.QOpenGLWidget):
     """OpenGL widget for rendering ImGui."""
-    def __init__(self, render_loop_function, parent=None):
+    def __init__(self, render_loop_class: 'MIBRenderLoop', parent=None):
         super().__init__(parent)
-        self._render_loop_function = render_loop_function
+        self._init_render_context_manager(render_loop_class)
+        self._set_refresh_rate()
         self.setMouseTracking(True)
         self.setFocusPolicy(QtCore.Qt.FocusPolicy.StrongFocus)
-        self._set_refresh_rate()
+
+    def _init_render_context_manager(self, render_loop_class: 'MIBRenderLoop'):
+        self._render_context_manger = MIBRenderContextManager()
+        self._context = self._render_context_manger.context_list[-1]
+        self._render_loop_function = render_loop_class(self._context).render_loop
 
     def _set_refresh_rate(self):
         """Set the refresh rate of the UI."""
@@ -59,18 +65,14 @@ class MIBOGLWidget(QtOpenGLWidgets.QOpenGLWidget):
     def initializeGL(self):
         """Initialize the OpenGL context."""
         gl.glClearColor(0.1, 0.1, 0.1, 1.0)
-        imgui.create_context()
-        try:
-            imgui.backends.opengl3_init("#version 330")
-        except:
-            imgui.backends.opengl3_shutdown()
-            imgui.backends.opengl3_init("#version 330")
+        imgui.set_current_context(self._context)
         imgui.backends.opengl3_new_frame()
         imgui.get_io().display_size = imgui.ImVec2(self.width(), self.height())
 
     def resizeGL(self, width, height):
         """Handle window resizing."""
         gl.glViewport(0, 0, width, height)
+        imgui.set_current_context(self._context)
         imgui.get_io().display_size = imgui.ImVec2(width, height)
 
     def paintGL(self):
@@ -80,73 +82,73 @@ class MIBOGLWidget(QtOpenGLWidgets.QOpenGLWidget):
         imgui.backends.opengl3_render_draw_data(imgui.get_draw_data())
 
     def deleteLater(self):
-        """Clean up the OpenGL context."""
-        imgui.backends.opengl3_shutdown()
-        imgui.destroy_context()
-        return super().close()
+        """Override deleteLater to clean up the context."""
+        self._render_context_manger.remove_context(self._context)
+        return super().deleteLater()
+    
 
     def mouseMoveEvent(self, event: QtGui.QMouseEvent):
         """Handle mouse move events."""
-        imgui_io = imgui.get_io()
-        imgui_io.mouse_pos = imgui.ImVec2(event.position().x(), event.position().y())
+        imgui.set_current_context(self._context)
+        imgui.get_io().mouse_pos = imgui.ImVec2(event.position().x(), event.position().y())
         super().mouseMoveEvent(event)
 
     def mousePressEvent(self, event: QtGui.QMouseEvent):
         """Handle mouse press events."""
-        imgui_io = imgui.get_io()
+        imgui.set_current_context(self._context)
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
-            imgui_io.mouse_down[0] = True
+            imgui.get_io().mouse_down[0] = True
         elif event.button() == QtCore.Qt.MouseButton.RightButton:
-            imgui_io.mouse_down[1] = True
+            imgui.get_io().mouse_down[1] = True
         elif event.button() == QtCore.Qt.MouseButton.MiddleButton:
-            imgui_io.mouse_down[2] = True
+            imgui.get_io().mouse_down[2] = True
         super().mousePressEvent(event)
 
 
     def mouseReleaseEvent(self, event: QtGui.QMouseEvent):
         """Handle mouse release events."""
-        imgui_io = imgui.get_io()
+        imgui.set_current_context(self._context)
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
-            imgui_io.mouse_down[0] = False
+            imgui.get_io().mouse_down[0] = False
         elif event.button() == QtCore.Qt.MouseButton.RightButton:
-            imgui_io.mouse_down[1] = False
+            imgui.get_io().mouse_down[1] = False
         elif event.button() == QtCore.Qt.MouseButton.MiddleButton:
-            imgui_io.mouse_down[2] = False
+            imgui.get_io().mouse_down[2] = False
         super().mouseReleaseEvent(event)
 
 
     def wheelEvent(self, event: QtGui.QWheelEvent):
         """Handle mouse wheel events."""
-        imgui_io = imgui.get_io()
+        imgui.set_current_context(self._context)
         scroll_amount = event.angleDelta().y() / 120.0
-        imgui_io.mouse_wheel += scroll_amount
+        imgui.get_io().mouse_wheel += scroll_amount
         super().wheelEvent(event)
 
 
     def keyPressEvent(self, event: QtGui.QKeyEvent):
         """Handle key press events."""
-        imgui_io = imgui.get_io()
+        imgui.set_current_context(self._context)
         key = event.key()
         if 0 <= key < 512:
-            imgui_io.add_key_event(key, True)
-        imgui_io.key_ctrl = bool(event.modifiers() & QtCore.Qt.KeyboardModifier.ControlModifier)
-        imgui_io.key_shift = bool(event.modifiers() & QtCore.Qt.KeyboardModifier.ShiftModifier)
-        imgui_io.key_alt = bool(event.modifiers() & QtCore.Qt.KeyboardModifier.AltModifier)
+            imgui.get_io().add_key_event(key, True)
+        imgui.get_io().key_ctrl = bool(event.modifiers() & QtCore.Qt.KeyboardModifier.ControlModifier)
+        imgui.get_io().key_shift = bool(event.modifiers() & QtCore.Qt.KeyboardModifier.ShiftModifier)
+        imgui.get_io().key_alt = bool(event.modifiers() & QtCore.Qt.KeyboardModifier.AltModifier)
         if event.text():
             for char in event.text():
-                imgui_io.add_input_character(ord(char))
+                imgui.get_io().add_input_character(ord(char))
         super().keyPressEvent(event)
 
 
     def keyReleaseEvent(self, event: QtGui.QKeyEvent):
         """Handle key release events."""
-        imgui_io = imgui.get_io()
+        imgui.set_current_context(self._context)
         key = event.key()
         if 0 <= key < 512:
-            imgui_io.add_key_event(key, False)
-        imgui_io.key_ctrl = bool(event.modifiers() & QtCore.Qt.KeyboardModifier.ControlModifier)
-        imgui_io.key_shift = bool(event.modifiers() & QtCore.Qt.KeyboardModifier.ShiftModifier)
-        imgui_io.key_alt = bool(event.modifiers() & QtCore.Qt.KeyboardModifier.AltModifier)
+            imgui.get_io().add_key_event(key, False)
+        imgui.get_io().key_ctrl = bool(event.modifiers() & QtCore.Qt.KeyboardModifier.ControlModifier)
+        imgui.get_io().key_shift = bool(event.modifiers() & QtCore.Qt.KeyboardModifier.ShiftModifier)
+        imgui.get_io().key_alt = bool(event.modifiers() & QtCore.Qt.KeyboardModifier.AltModifier)
         super().keyReleaseEvent(event)
 
 
@@ -155,10 +157,10 @@ class MIBOGLWidget(QtOpenGLWidgets.QOpenGLWidget):
 
 class MIBView(lxifc.CustomView):
     """Custom view ImGui Bundle base class."""
-    def __init__(self, window: 'MIBRenderLoop'):
+    def __init__(self, render_loop_class: 'MIBRenderLoop'):
         super().__init__()
-        self._render_loop_function = window.render_loop
-
+        self._render_loop_class = render_loop_class
+        
     def customview_Init(self, pane):
         if pane == None:
             return False
@@ -170,7 +172,7 @@ class MIBView(lxifc.CustomView):
         if parent_widget != None:
             layout = QtWidgets.QVBoxLayout(parent_widget)
             layout.setContentsMargins(0, 0, 0, 0)
-            self._widget = MIBOGLWidget(self._render_loop_function, parent_widget)
+            self._widget = MIBOGLWidget(self._render_loop_class, parent_widget)
             layout.addWidget(self._widget)
             return True
         return False
@@ -183,7 +185,41 @@ class MIBView(lxifc.CustomView):
 
 class MIBRenderLoop:
     """Custom window ImGui Bundle base class."""
+    def __init__(self, context):
+        self._context = context
 
     def render_loop(self):
         """Override this method to implement your render loop."""
         raise NotImplementedError("Implement render loop!")
+    
+
+class MIBRenderContextManager:
+    """Render/Context manager for ImGui Bundle."""
+    _instance = None
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+    
+    def __init__(self):
+        if hasattr(self, 'context_list') and len(self.context_list) > 0:
+            imgui.set_current_context(self.context_list[-1])
+            self.context_list.append(imgui.create_context())
+            self._init_renderer()
+            return
+        self.context_list = []
+        self.context_list.append(imgui.create_context())   
+        self._init_renderer()
+    
+    def _init_renderer(self):
+        """Initialize the renderer."""
+        imgui.set_current_context(self.context_list[-1])
+        imgui.backends.opengl3_init("#version 330")
+
+    def remove_context(self, context):
+        """Remove a context from the context list."""
+        if context in self.context_list:
+            self.context_list.remove(context)
+            imgui.set_current_context(context)
+            imgui.backends.opengl3_shutdown()
+            imgui.destroy_context(context)

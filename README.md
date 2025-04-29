@@ -10,15 +10,15 @@ This project provides integration of python [Dear Imgui Bundle](https://github.c
 
 ## Features
 
-- Easy integration of ImGui with Modo
-- Custom UI components for Modo workflows
+- ImGui Bundle integration
+- Multi window support
 - Example
 
 ## Installation
 
 1. Install imgui_bundle into your `/python3kit/extra64/Python/Lib/site-packages` directory (manually).
-2. Install example kit.
-3. Start Exploring :)
+2. Install example kit to you user directory.
+3. Start exploring :)
 
 ## Usage
 
